@@ -10,7 +10,6 @@ public class ConnDB {
     public static Connection getConnection() throws SQLException {
         return getConnection(null);
     }
-
     public static Connection getConnection(String dbName) throws SQLException {
         Properties properties = new Properties();
         try (InputStream input = ConnDB.class.getClassLoader().getResourceAsStream("config.properties")) {
@@ -19,20 +18,24 @@ public class ConnDB {
             }
             properties.load(input);
         } catch (IOException e) {
-            e.printStackTrace();
             throw new SQLException("No se pudo cargar el archivo de configuración", e);
         }
-
+    
         String url = properties.getProperty("db.url");
         String username = properties.getProperty("db.username");
         String password = properties.getProperty("db.password");
+    
         if (url == null || username == null || password == null) {
             throw new SQLException("Faltan propiedades en el archivo de configuración.");
         }
-        if (dbName != null) {
-            url = url.replaceAll("/[^/]+$", "/" + dbName);
+        Connection connection = DriverManager.getConnection(url, username, password);
+        if (dbName != null && !dbName.isEmpty()) {
+            try (Statement stmt = connection.createStatement()) {
+                stmt.execute("USE " + dbName);
+            }
         }
-
-        return DriverManager.getConnection(url, username, password);
+    
+        return connection;
     }
+    
 }

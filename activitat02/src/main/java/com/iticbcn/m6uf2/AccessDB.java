@@ -2,9 +2,6 @@ package com.iticbcn.m6uf2;
 
 import java.sql.*;
 import java.io.*;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Properties;
 
 import org.w3c.dom.*;
 import javax.xml.parsers.*;
@@ -34,29 +31,9 @@ public class AccessDB {
             try (Statement st = connection.createStatement()) {
                 st.executeUpdate(query);
                 System.out.println("Base de dades creada amb nom: " + dbName);
-                updateConfigProperties(dbName);
+                String queryUse = "use " + dbName;
+                st.executeUpdate(queryUse);
             }
-        }
-    }
-    private static void updateConfigProperties(String dbName) {
-        String userDir = System.getProperty("user.dir");
-        Path configPath = Paths.get(userDir, "Activitat02-UF2","activitat02","src", "main", "resources", "config.properties");
-        Properties properties = new Properties();
-
-        try (InputStream input = new FileInputStream(configPath.toFile())) {
-            properties.load(input);
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.err.println("No se pudo cargar el archivo config.properties");
-        }
-        String newUrl = "jdbc:mariadb://localhost:3306/" + dbName;
-        properties.setProperty("db.url", newUrl);
-        try (OutputStream output = new FileOutputStream(configPath.toFile())) {
-            properties.store(output, "Actualizado después de crear la base de datos");
-            System.out.println("Archivo config.properties actualizado con la URL: " + newUrl);
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.err.println("No se pudo guardar el archivo config.properties");
         }
     }
     public static void createTables(String dbName) {
@@ -134,9 +111,42 @@ public class AccessDB {
             e.printStackTrace();
         }
     }    
-    public static void insertHoraris(int id, String hora_Salida, String hora_Llegada, String fecha) {
+    public static void insertsMassius(String dbName) {
+        String[] queries = {
+            "INSERT INTO Horari (id, hora_Salida, hora_Llegada, fecha) VALUES (1, '08:00:00', '10:00:00', '2024-12-12');",
+            "INSERT INTO Horari (id, hora_Salida, hora_Llegada, fecha) VALUES (2, '09:30:00', '11:30:00', '2024-12-13');",
+            "INSERT INTO Horari (id, hora_Salida, hora_Llegada, fecha) VALUES (3, '10:00:00', '12:00:00', '2024-12-14');",
+            "INSERT INTO Horari (id, hora_Salida, hora_Llegada, fecha) VALUES (4, '12:00:00', '14:00:00', '2024-12-15');",
+            "INSERT INTO Horari (id, hora_Salida, hora_Llegada, fecha) VALUES (5, '14:00:00', '16:00:00', '2024-12-16');",
+            "INSERT INTO Horari (id, hora_Salida, hora_Llegada, fecha) VALUES (6, '16:30:00', '18:30:00', '2024-12-17');",
+            "INSERT INTO Horari (id, hora_Salida, hora_Llegada, fecha) VALUES (7, '18:00:00', '20:00:00', '2024-12-18');",
+            "INSERT INTO Horari (id, hora_Salida, hora_Llegada, fecha) VALUES (8, '20:00:00', '22:00:00', '2024-12-19');",
+            "INSERT INTO Horari (id, hora_Salida, hora_Llegada, fecha) VALUES (9, '06:30:00', '08:30:00', '2024-12-20');",
+            "INSERT INTO Horari (id, hora_Salida, hora_Llegada, fecha) VALUES (10, '07:00:00', '09:00:00', '2024-12-21');"
+        };
+        try(Connection conn = ConnDB.getConnection(dbName)) {
+            boolean statusAutoCommit = conn.getAutoCommit();
+            try(Statement st = conn.createStatement()) {
+                for(String query : queries) {
+                    st.executeUpdate(query);
+                    conn.commit();
+                }
+                System.out.println("Fets 10 inserts automàtics a la taula Horari");
+            } catch(SQLException e) {
+                conn.rollback();
+                System.err.println("Error al fer les insercions a la taula Horari" + e.getMessage());
+                e.printStackTrace();
+            } finally {
+                conn.setAutoCommit(statusAutoCommit);
+            }
+        } catch(SQLException e) {
+            System.err.println("Error a l'intentar conectar-se" + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    public static void insertHoraris(String dbName, int id, String hora_Salida, String hora_Llegada, String fecha) {
         String query = "insert into Horari (id, hora_Salida, hora_Llegada, fecha) values (?, ?, ?, ?)";
-        try(Connection conn = ConnDB.getConnection();) {
+        try(Connection conn = ConnDB.getConnection(dbName);) {
             boolean statusAutoCommit = conn.getAutoCommit();
             conn.setAutoCommit(false);
             try(PreparedStatement pst = conn.prepareStatement(query)) {
@@ -174,7 +184,6 @@ public class AccessDB {
             e.printStackTrace();    
         }
     }
-
     public static void writeXML(String dbName) throws Exception {
         crearDirectori();
         String ruta = PATH + "/HorarisXML/";
@@ -248,7 +257,7 @@ public class AccessDB {
         }
     }
     public static void modificaCamp(String dbName, String tableName, int id, String camp, String nouValor) {
-        String query = "update " + tableName + "set " + camp + " = ? where id = ?";
+        String query = "update " + tableName + " set " + camp + " = ? where id = ?";
         try(Connection conn = ConnDB.getConnection();) {
             boolean statusAutoCommit = conn.getAutoCommit();
             conn.setAutoCommit(false); 

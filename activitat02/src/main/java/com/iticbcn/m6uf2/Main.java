@@ -33,8 +33,12 @@ public class Main {
                     System.out.println("Perfecte, en quina base de dades?");
                     String dbName = reader.readLine();
                     AccessDB.createTables(dbName);
+                    System.out.println("Vale, ara et faré 10 inserts automàtics per si vols probar altres comandes");
+                    AccessDB.insertsMassius(dbName);
                 }
                 case "3" -> {
+                    System.out.println("Diu-me la base de dades");
+                    String dbName = reader.readLine();
                     System.out.println("Vale, diu-me quins horaris vols afegir? \n Primer la ID: ");
                     int id = Integer.parseInt(reader.readLine());
                     System.out.println("Perfecte, ara la hora de sortida");
@@ -44,7 +48,7 @@ public class Main {
                     System.out.println("Ara la data");
                     String data = reader.readLine();
                     System.out.println("Guai, faré l'inserció!");
-                    AccessDB.insertHoraris(id, horaSortida, horaArribada, data);
+                    AccessDB.insertHoraris(dbName, id, horaSortida, horaArribada, data);
                 }
                 case "4" -> {
                     System.out.println("Indica el número de pàgina que vols veure:");
