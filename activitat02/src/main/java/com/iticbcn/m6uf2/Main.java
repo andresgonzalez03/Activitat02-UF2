@@ -51,9 +51,11 @@ public class Main {
                     AccessDB.insertHoraris(dbName, id, horaSortida, horaArribada, data);
                 }
                 case "4" -> {
+                    System.out.println("Diu-me la base de dades");
+                    String dbName = reader.readLine();
                     System.out.println("Indica el número de pàgina que vols veure:");
                     int page = Integer.parseInt(reader.readLine());
-                    AccessDB.mostraPagina(page);
+                    AccessDB.mostraPagina(dbName, page);
                 }
                 case "5" -> {
                     System.out.println("Indica el nom de la base de dades");

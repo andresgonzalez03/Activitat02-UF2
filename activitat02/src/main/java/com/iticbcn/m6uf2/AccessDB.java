@@ -169,10 +169,10 @@ public class AccessDB {
             e.printStackTrace();
         }
     }
-    public static void mostraPagina(int page) {
+    public static void mostraPagina(String dbName,int page) {
         int offset = (page - 1) * PAGE_SIZE;
         String query = "select * from Horari limit ? offset ?";
-        try(Connection conn = ConnDB.getConnection(); PreparedStatement pst = conn.prepareStatement(query)) {
+        try(Connection conn = ConnDB.getConnection(dbName); PreparedStatement pst = conn.prepareStatement(query)) {
             pst.setInt(1, PAGE_SIZE);
             pst.setInt(2, offset);
             ResultSet rs = pst.executeQuery();
@@ -258,7 +258,7 @@ public class AccessDB {
     }
     public static void modificaCamp(String dbName, String tableName, int id, String camp, String nouValor) {
         String query = "update " + tableName + " set " + camp + " = ? where id = ?";
-        try(Connection conn = ConnDB.getConnection();) {
+        try(Connection conn = ConnDB.getConnection(dbName);) {
             boolean statusAutoCommit = conn.getAutoCommit();
             conn.setAutoCommit(false); 
             try(PreparedStatement pst = conn.prepareStatement(query)) {
