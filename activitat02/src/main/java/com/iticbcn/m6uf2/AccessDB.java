@@ -194,7 +194,7 @@ public class AccessDB {
                 DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
                 DocumentBuilder builder = factory.newDocumentBuilder();
                 DOMImplementation implementation = builder.getDOMImplementation();
-                Document document = implementation.createDocument(null, "encarrecs", null);
+                Document document = implementation.createDocument(null, "Horaris", null);
                 document.setXmlVersion("1.0");
 
                 Element arrel = document.getDocumentElement();

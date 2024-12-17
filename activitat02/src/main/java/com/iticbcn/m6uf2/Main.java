@@ -41,11 +41,11 @@ public class Main {
                     String dbName = reader.readLine();
                     System.out.println("Vale, diu-me quins horaris vols afegir? \n Primer la ID: ");
                     int id = Integer.parseInt(reader.readLine());
-                    System.out.println("Perfecte, ara la hora de sortida");
+                    System.out.println("Perfecte, ara la hora de sortida en format (HH:mm:ss)");
                     String horaSortida = reader.readLine();
-                    System.out.println("Ara l'hora d'arribada");
+                    System.out.println("Ara l'hora d'arribada en format (HH:mm:ss)");
                     String horaArribada = reader.readLine();
-                    System.out.println("Ara la data");
+                    System.out.println("Ara la data en format (yyyy-MM-dd)");
                     String data = reader.readLine();
                     System.out.println("Guai, faré l'inserció!");
                     AccessDB.insertHoraris(dbName, id, horaSortida, horaArribada, data);
@@ -77,7 +77,7 @@ public class Main {
                     String dbName = reader.readLine();
                     System.out.println("Indica el nom de la taula");
                     String tableName = reader.readLine();
-                    System.out.println("Indica el nom de la columna");
+                    System.out.println("Indica el nom de la columna (pot ser id, hora_Salida, hora_Llegada, fecha)");
                     String columnName = reader.readLine();
                     System.out.println("Indica el patró de cerca");
                     String patro = reader.readLine();
@@ -88,7 +88,7 @@ public class Main {
                     String dbName = reader.readLine();
                     System.out.println("Indica el nom de la taula");
                     String tableName = reader.readLine();
-                    System.out.println("Indica el nom de la columna");
+                    System.out.println("Indica el nom de la columna (pot ser id, hora_Salida, hora_Llegada, fecha)");
                     String columnName = reader.readLine();
                     System.out.println("Indica l'id del registre que vols modificar");
                     int id = Integer.parseInt(reader.readLine());
